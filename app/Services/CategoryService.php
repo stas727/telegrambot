@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Schema\Client;
+use Schema\Collection;
 
 
 /**
@@ -22,9 +23,9 @@ class CategoryService
         $this->api = $api;
     }
 
-    public function all()
+    public function all(): Collection
     {
-        $this->api->get('/categories', [
+        return $this->api->get('/categories', [
             'limit' => 1000
         ]);
     }

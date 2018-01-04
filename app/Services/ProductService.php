@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Services;
 
 use Schema\Client;
+use Schema\Collection;
 
 /**
  * Created by PhpStorm.
@@ -19,9 +21,9 @@ class ProductService
         $this->api = $api;
     }
 
-    public function all()
+    public function all(): Collection
     {
-        $this->api->get('/products' , [
+        return $this->api->get('/products', [
             'limit' => 1000
         ]);
     }

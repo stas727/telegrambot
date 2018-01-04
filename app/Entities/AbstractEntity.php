@@ -9,7 +9,4 @@
 namespace App\Entities;
 
 
-abstract class AbstractEntity extends \Eloquent
-{
-
-}
+abstract class AbstractEntity extends \Eloquent{}
