@@ -66,6 +66,13 @@ abstract class AbstractFlow
      */
     public function run($state = null)
     {
+        Log::debug(
+            static::class . '.run', [
+                'user' => $this->user->toArray(),
+                'message' => $this->message->toArray(),
+                'state' => $state
+            ]
+        );
         //передано значение state
         if (!is_null($state)) {
             $this->$state();
@@ -102,7 +109,7 @@ abstract class AbstractFlow
             && class_exists($this->context['flow'])
             && method_exists(app($this->context['flow']), $this->context['state'])
         ) {
-            $flow = app($this->context['flow']);
+            $flow = $this->getFlow($this->context['flow']);
             $states = $flow->getStates();
             $currentState = collect($states)->search($this->context['state']);
             $currentState = $states[$currentState];
@@ -131,11 +138,7 @@ abstract class AbstractFlow
 
     protected function jump($flow, string $state = null)
     {
-        if (!class_exists($flow)) {
-            Log::error('Flow does not exist');
-        }
-
-        app($flow)->run($state);
+        $this->getFlow($flow)->run($state);
     }
 
     private function getFlow(string $flow)
@@ -150,6 +153,8 @@ abstract class AbstractFlow
         $flow->setUser($this->user);
         $flow->setMessage($this->message);
         $flow->setContext($this->context);
+
+        return $flow;
     }
 
     protected abstract function first();
