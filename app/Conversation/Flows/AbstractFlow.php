@@ -79,7 +79,7 @@ abstract class AbstractFlow
 
         //перезаписываем опции из контекста
         if (count($options) > 0) {
-            $this->options = array_merge($this->options, $options);
+            $this->options = array_merge($options, $this->options);
         } else {
             $this->options = array_merge($this->context['options'] ?? $this->options, $this->options);
         }

@@ -52,10 +52,12 @@ class CategoryFlow extends AbstractFlow
     public function navigate()
     {
         $category = collect($this->categories())->first(function ($record){
-            if(hash_equals($record->offsetGet('name'), $this->message->text)){
-                return $record;
-            }
+           return hash_equals($record->offsetGet('name'), $this->message->text);
+
         });
+        if(is_null($category)){
+            return;
+        }
         $id = $category->getOffset('id');
         $this->options = ['parent_id' => $id];
         //$this->saveOption('parent_id', $id ?? $this->options['parent_id']);
