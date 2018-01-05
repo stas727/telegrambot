@@ -71,8 +71,7 @@ abstract class AbstractFlow
             ]
         );
         //перезаписываем опции из контекста
-
-        $this->options = $this->context['options'] ?? $this->options;
+        $this->options = array_merge($this->context['options'] ?? $this->options, $this->options);
         //передано значение state
         if (!is_null($state)) {
             $this->$state();

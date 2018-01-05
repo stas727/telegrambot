@@ -17,7 +17,7 @@ class CategoryFlow extends AbstractFlow
 {
 
     protected $triggers = [];
-
+    protected $states = ['first', 'navigate'];
     protected $options = [
         'parent_id' => null
     ];
@@ -52,6 +52,10 @@ class CategoryFlow extends AbstractFlow
                 'one_time_keyboard' => true])
         ]);
 
+
+    }
+
+    public function navigate () {
 
     }
 }
