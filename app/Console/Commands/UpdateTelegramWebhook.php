@@ -43,9 +43,9 @@ class UpdateTelegramWebhook extends Command
         $result = Telegram::setWebhook([
             'url' => $url
         ]);
-        $this->info('Result : '. $result);
+        $this->info('Result : '. $result->getResult());
         if (!$result->getResult()) {
-            $this->error('Error init webhook : '  . $result);
+            $this->error('Error init webhook : '  . $result->getResult());
             return;
         } else {
             $this->info('Webhook init');

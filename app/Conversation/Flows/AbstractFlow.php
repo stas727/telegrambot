@@ -13,6 +13,7 @@ use App\Entities\User;
 use App\Events\FlowRunned;
 use Log;
 use Psr\Log\InvalidArgumentException;
+use Telegram;
 
 abstract class AbstractFlow
 {
@@ -158,5 +159,9 @@ abstract class AbstractFlow
     }
 
     protected abstract function first();
+
+    public function telegram () {
+        return Telegram::bot();
+    }
 
 }
