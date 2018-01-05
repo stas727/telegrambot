@@ -16,6 +16,13 @@ class Context
 {
     public function save(User $user, AbstractFlow $flow, string $state)
     {
+        \Log::debug('Context.save', [
+            'user' => $user->toArray(),
+            'flow' => get_class($flow),
+            'state' => $state
+        ]);
+
+
         \Cache::forever($this->key($user), [
             'flow' => get_class($flow),
             'state' => $state

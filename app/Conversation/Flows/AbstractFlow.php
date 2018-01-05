@@ -46,6 +46,7 @@ abstract class AbstractFlow
 
     /**
      * @param string|null $state
+     * @return string|null $state
      */
     public function run($state = null)
     {
@@ -58,10 +59,18 @@ abstract class AbstractFlow
         );
 
         foreach ($this->triggers as $trigger) {
-            if(hash_equals($trigger, $this->message->text)){
-                $this->first();
+            if (hash_equals($trigger, $this->message->text)) {
+                $state = 'first';
             }
         }
+
+        if (is_null($state)) {
+            return null;
+        }
+
+        $this->$state();
+
+        return $state;
 
     }
 

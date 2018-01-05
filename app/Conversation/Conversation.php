@@ -39,7 +39,11 @@ class Conversation
 
             $flow->setUser($user);
             $flow->setMessage($message);
-            $flow->run();
+            $state = $flow->run();
+            if (!is_null($state)) {
+                $this->context->save($user, $flow, $state);
+                break;
+            }
         }
     }
 }
