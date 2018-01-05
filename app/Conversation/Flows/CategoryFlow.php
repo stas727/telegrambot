@@ -8,7 +8,10 @@
 
 namespace App\Conversation\Flow;
 
-use Telegram\Bot\Laravel\Facades\Telegram;
+use App\Services\CategoryService;
+use App\Services\ProductService;
+use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Keyboard\Button;
 
 class CategoryFlow extends AbstractFlow
 {
@@ -18,9 +21,32 @@ class CategoryFlow extends AbstractFlow
 
     public function first()
     {
-        Telegram::sendMessage([
-           'chat_id' => $this->user->chat_id,
-            'text' => 'Список категорий'
+        /**
+         * @var CategoryService $category
+         */
+
+        $services = app(CategoryService::class);
+        $categories = $services->all()->records();
+
+        $buttons = [];
+
+
+        foreach ($categories as $category) {
+            $buttons[] = [$category->name];
+            $keyboard = [Button::make([
+                'text' => $category->name
+            ])];
+        }
+
+        \Telegram::sendMessage([
+            'chat_id' => $this->user->chat_id,
+            'text' => 'Список категорий',
+            'reply_markup' => Keyboard::make([
+                'keyboard' => $buttons,
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true])
         ]);
+
+
     }
 }

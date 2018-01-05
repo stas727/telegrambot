@@ -12,7 +12,7 @@
     "barryvdh/laravel-ide-helper": "^2.4",
     "doctrine/dbal": "~2.3",
     "fideloper/proxy": "~3.3",
-    "irazasyed/telegram-bot-sdk": "^2.2",
+    "irazasyed/telegram-bot-sdk": "dev-master",
     "laravel/framework": "5.5.*",
     "laravel/tinker": "~1.0",
     "schemaio/schema-php-client": "dev-master",
