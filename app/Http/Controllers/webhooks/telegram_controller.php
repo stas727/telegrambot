@@ -43,13 +43,6 @@ class telegram_controller extends Controller
         $message = $messages->store($user, $message->getMessageId(), $message->getText() ?? '');
 
         $conversation->start($user, $message);
-        //ответим :)
-        /*if (hash_equals($message->getText(), '/start')) {
-            Telegram::sendMessage([
-                'chat_id' => $user->chat_id,
-                'text' => 'Привет в чате от Крокуса:)'
-            ]);
-        }*/
     }
 
 }

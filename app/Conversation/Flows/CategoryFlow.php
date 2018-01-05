@@ -24,7 +24,7 @@ class CategoryFlow extends AbstractFlow
          * @var CategoryService $category
          */
 
-        /*$services = app(CategoryService::class);
+        $services = app(CategoryService::class);
         $categories = $services->all()->records();
 
         $buttons = [];
@@ -41,7 +41,7 @@ class CategoryFlow extends AbstractFlow
                 'keyboard' => $buttons,
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true])
-        ]);*/
+        ]);
 
 
     }
