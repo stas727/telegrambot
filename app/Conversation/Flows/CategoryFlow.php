@@ -29,8 +29,6 @@ class CategoryFlow extends AbstractFlow
          */
         $parent_id = $this->options['parent_id'];
 
-        Log::debug('CategoryFlow.first', $parent_id);
-
         $services = app(CategoryService::class);
         $categories = $services->all()->records();
 
@@ -55,7 +53,8 @@ class CategoryFlow extends AbstractFlow
 
     }
 
-    public function navigate () {
+    public function navigate()
+    {
 
     }
 }
