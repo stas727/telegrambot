@@ -11,18 +11,25 @@ namespace App\Conversation\Flow;
 use App\Services\CategoryService;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram;
+use Log;
 
 class CategoryFlow extends AbstractFlow
 {
 
     protected $triggers = [];
 
+    protected $options = [
+        'parent_id' => null
+    ];
 
     public function first()
     {
         /**
          * @var CategoryService $category
          */
+        $parent_id = $this->options['parent_id'];
+
+        Log::debug('CategoryFlow.first', $parent_id);
 
         $services = app(CategoryService::class);
         $categories = $services->all()->records();
@@ -31,7 +38,9 @@ class CategoryFlow extends AbstractFlow
 
 
         foreach ($categories as $category) {
-            $buttons[] = [$category->offsetGet('name')];
+            if ($category->offsetGet('parent_id') == $parent_id) {
+                $buttons[] = [$category->offsetGet('name')];
+            }
         }
 
         Telegram::sendMessage([

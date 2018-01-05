@@ -11,11 +11,26 @@ namespace App\Listeners;
 
 use App\Conversation\Context;
 use App\Events\FlowRunned;
+use Log;
 
 class SaveRunnedFlowToContext
 {
     public function handle(FlowRunned $event)
     {
-        Context::save($event->getUser(), $event->getFlow(), $event->getState());
+
+        $user = $event->getUser();
+        $flow = $event->getFlow();
+        $state = $event->getState();
+        $option = $event->getOptions();
+
+        Log::debug(
+            static::class . '.run', [
+                'user' => $user->toArray(),
+                'flow' => get_class($flow),
+                'state' => $state,
+                'option' => $option
+            ]
+        );
+        Context::save($user, $flow, $state, $option);
     }
 }

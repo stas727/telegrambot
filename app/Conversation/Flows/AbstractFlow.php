@@ -11,6 +11,7 @@ namespace App\Conversation\Flow;
 use App\Entities\Message;
 use App\Entities\User;
 use App\Events\FlowRunned;
+use App\Events\OptionChanged;
 use Log;
 use Psr\Log\InvalidArgumentException;
 use Telegram;
@@ -18,22 +19,17 @@ use Telegram;
 abstract class AbstractFlow
 {
 
-    /**
-     * @var User $user
-     */
     protected $user;
-    /**
-     * @var Message $message
-     */
+
     protected $message;
 
     protected $triggers = [];
 
-    protected $states = [];
-    /**
-     * @var array $context
-     */
-    protected $context = ['first'];
+    protected $states = ['first'];
+
+    protected $options = [];
+
+    protected $context = [];
 
     /**
      * @param User $user
@@ -74,6 +70,9 @@ abstract class AbstractFlow
                 'state' => $state
             ]
         );
+        //перезаписываем опции из контекста
+
+        $this->options = $this->context['options'];
         //передано значение state
         if (!is_null($state)) {
             $this->$state();
@@ -142,6 +141,11 @@ abstract class AbstractFlow
         $this->getFlow($flow)->run($state);
     }
 
+    public function saveOption(string $key, $value)
+    {
+        event(new OptionChanged($this->user, $key, $value));
+    }
+
     private function getFlow(string $flow)
     {
         if (!class_exists($flow)) {
@@ -160,7 +164,8 @@ abstract class AbstractFlow
 
     protected abstract function first();
 
-    public function telegram () {
+    public function telegram()
+    {
         return Telegram::bot();
     }
 

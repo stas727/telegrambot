@@ -20,14 +20,16 @@ class FlowRunned
 
     protected $state;
 
-
     protected $user;
 
-    public function __construct(User $user, AbstractFlow $flow, string $state)
+    protected $options;
+
+    public function __construct(User $user, AbstractFlow $flow, string $state, array $options = [])
     {
         $this->user = $user;
         $this->flow = $flow;
         $this->state = $state;
+        $this->options = $options;
     }
 
     /**
@@ -60,6 +62,14 @@ class FlowRunned
     public function getUser(): User
     {
         return $this->user;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 
 
