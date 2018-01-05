@@ -38,17 +38,20 @@ class UpdateTelegramWebhook extends Command
      */
     public function handle()
     {
+        /**
+         * @var Telegram $result
+         */
         $url = str_replace('http://', 'https://', route('telegram.webhook'));
         $this->info('Set url: '. $url);
         $result = Telegram::bot()->setWebhook([
             'url' => $url
         ]);
-        $this->info('Result : '. $result->getResult());
+       /* dd($result);
         if (!$result->getResult()) {
             $this->error('Error init webhook : '  . $result->getResult());
             return;
         } else {
             $this->info('Webhook init');
-        }
+        }*/
     }
 }
