@@ -29,6 +29,10 @@ class Context
         ]);
     }
 
+    public function get(User $user)
+    {
+        return cache($this->key($user), []);
+    }
 
     public function key(User $user)
     {

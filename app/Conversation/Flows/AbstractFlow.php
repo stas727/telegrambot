@@ -27,7 +27,10 @@ abstract class AbstractFlow
     protected $triggers = [];
 
     protected $states = [];
-
+    /**
+     * @var array $context
+     */
+    protected $context = [];
     /**
      * @param User $user
      */
@@ -44,6 +47,11 @@ abstract class AbstractFlow
         $this->message = $message;
     }
 
+    public function setContext($context)
+    {
+        $this->context = $context;
+    }
+
     /**
      * @param string|null $state
      * @return string|null $state
@@ -57,7 +65,10 @@ abstract class AbstractFlow
                 'state' => $state
             ]
         );
+        //поиск по контексту
 
+
+        //поиск по тригерам
         foreach ($this->triggers as $trigger) {
             if (hash_equals($trigger, $this->message->text)) {
                 $state = 'first';

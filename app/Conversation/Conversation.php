@@ -10,8 +10,6 @@ namespace App\Conversation;
 
 use App\Conversation\Flow\AbstractFlow;
 use App\Conversation\Flow\WelcomeFlow;
-use App\Entities\Message;
-use App\Entities\User;
 use Log;
 
 class Conversation
@@ -21,7 +19,7 @@ class Conversation
         WelcomeFlow::class,
     ];
 
-    public function start(User $user, Message $message)
+    public function start($user, $message)
     {
 
         Log::debug(
@@ -30,7 +28,7 @@ class Conversation
                 'message' => $message->toArray()
             ]
         );
-
+        $context = $this->context->get($user);
         foreach ($this->flows as $flow) {
             /**
              * @var AbstractFlow $flow
@@ -39,6 +37,7 @@ class Conversation
 
             $flow->setUser($user);
             $flow->setMessage($message);
+            $flow->setContext($context);
             $state = $flow->run();
             if (!is_null($state)) {
                 $this->context->save($user, $flow, $state);
