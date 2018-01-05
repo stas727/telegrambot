@@ -114,7 +114,7 @@ abstract class AbstractFlow
             $currentState = collect($states)->search($this->context['state']);
             $currentState = $states[$currentState];
 
-            $nextState = $states[$currentState + 1];
+            $nextState = $currentState + 1;
 
             if (isset($states[$nextState])) {
                 $flow->run($states[$nextState]);
