@@ -23,7 +23,7 @@ class WelcomeFlow extends AbstractFlow
 
     protected function first()
     {
-        Telegram::sendMessage([
+        $this->telegram()->sendMessage([
             'chat_id' => $this->user->chat_id,
             'text' => 'Привет от Крокус Студио :)'
         ]);

@@ -47,15 +47,16 @@ class CategoryFlow extends AbstractFlow
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true])
         ]);
+        Log::debug('must be send categories');
     }
 
     public function navigate()
     {
-        $category = collect($this->categories())->first(function ($record){
-           return hash_equals($record->offsetGet('name'), $this->message->text);
+        $category = collect($this->categories())->first(function ($record) {
+            return hash_equals($record->offsetGet('name'), $this->message->text);
 
         });
-        if(is_null($category)){
+        if (is_null($category)) {
             return;
         }
         $id = $category->getOffset('id');
