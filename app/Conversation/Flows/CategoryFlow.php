@@ -32,10 +32,7 @@ class CategoryFlow extends AbstractFlow
 
 
         foreach ($categories as $category) {
-            $buttons[] = [$category->name];
-            $keyboard = [Button::make([
-                'text' => $category->name
-            ])];
+            $buttons[] = [$category->offsetGet('name')];
         }
 
         \Telegram::sendMessage([
