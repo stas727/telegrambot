@@ -29,13 +29,11 @@ class CategoryFlow extends AbstractFlow
          */
         $parent_id = $this->options['parent_id'];
 
-        $services = app(CategoryService::class);
-        $categories = $services->all()->records();
 
         $buttons = [];
 
 
-        foreach ($categories as $category) {
+        foreach ($this->categories() as $category) {
             if ($category->offsetGet('parent_id') == $parent_id) {
                 $buttons[] = [$category->offsetGet('name')];
             }
@@ -49,12 +47,25 @@ class CategoryFlow extends AbstractFlow
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true])
         ]);
-
-
     }
 
     public function navigate()
     {
+        $category = collect($this->categories())->first(function ($record){
+            if(hash_equals($record->offsetGet('name'), $this->message->text)){
+                return $record;
+            }
+        });
+        $id = $category->getOffset('id');
+        $this->options = ['parent_id' => $id];
+        //$this->saveOption('parent_id', $id ?? $this->options['parent_id']);
+        //$this->run('first', ['parent_id' => $id]);
+        $this->first();
+    }
 
+    private function categories()
+    {
+        $services = app(CategoryService::class);
+        return $services->all()->records();
     }
 }

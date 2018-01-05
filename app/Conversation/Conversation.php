@@ -9,6 +9,7 @@
 namespace App\Conversation;
 
 use App\Conversation\Flow\AbstractFlow;
+use App\Conversation\Flow\CategoryFlow;
 use App\Conversation\Flow\WelcomeFlow;
 use Log;
 
@@ -17,6 +18,7 @@ class Conversation
 
     protected $flows = [
         WelcomeFlow::class,
+        CategoryFlow::class
     ];
 
     public function start($user, $message)

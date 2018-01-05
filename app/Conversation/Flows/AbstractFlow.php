@@ -61,7 +61,7 @@ abstract class AbstractFlow
      * @param string|null $state
      * @return string|null $state
      */
-    public function run($state = null)
+    public function run($state = null, $options = [])
     {
         Log::debug(
             static::class . '.run', [
@@ -70,20 +70,31 @@ abstract class AbstractFlow
                 'state' => $state
             ]
         );
+
+        //в контексте указан другой flow
+
+        if (isset($this->context['flow']) && $this->context['flow'] == get_class($this)) {
+            return false;
+        }
+
         //перезаписываем опции из контекста
-        $this->options = array_merge($this->context['options'] ?? $this->options, $this->options);
+        if (count($options) > 0) {
+            $this->options = array_merge($this->options, $options);
+        } else {
+            $this->options = array_merge($this->context['options'] ?? $this->options, $this->options);
+        }
         //передано значение state
         if (!is_null($state)) {
+            event(new FlowRunned($this->user, $this, $state, $this->options));
             $this->$state();
-            event(new FlowRunned($this->user, $this, $state));
             return true;
         }
         //поиск по контексту
         $state = $this->findByContext();
 
         if (!is_null($state)) {
+            event(new FlowRunned($this->user, $this, $state, $this->options));
             $this->$state();
-            event(new FlowRunned($this->user, $this, $state));
             return true;
         }
 
@@ -91,8 +102,8 @@ abstract class AbstractFlow
         $state = $this->findByTrigger();
 
         if (!is_null($state)) {
+            event(new FlowRunned($this->user, $this, $state, $this->options));
             $this->$state();
-            event(new FlowRunned($this->user, $this, $state));
             return true;
         }
 
