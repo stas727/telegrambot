@@ -27,5 +27,8 @@ class WelcomeFlow extends AbstractFlow
             'chat_id' => $this->user->chat_id,
             'text' => 'Привет от Крокус Студио :)'
         ]);
+
+        $this->jump(CategoryFlow::class);
     }
+
 }

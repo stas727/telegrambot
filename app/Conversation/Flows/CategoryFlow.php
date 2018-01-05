@@ -8,11 +8,19 @@
 
 namespace App\Conversation\Flow;
 
-class CategoryFlow
+use Telegram\Bot\Laravel\Facades\Telegram;
+
+class CategoryFlow extends AbstractFlow
 {
 
-    protected $triggers = [
-        '/start',
-    ];
+    protected $triggers = [];
 
+
+    public function first()
+    {
+        Telegram::sendMessage([
+           'chat_id' => $this->user->chat_id,
+            'text' => 'Список категорий'
+        ]);
+    }
 }

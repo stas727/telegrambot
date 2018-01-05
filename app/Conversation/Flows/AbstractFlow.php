@@ -30,7 +30,8 @@ abstract class AbstractFlow
     /**
      * @var array $context
      */
-    protected $context = [];
+    protected $context = ['first'];
+
     /**
      * @param User $user
      */
@@ -52,6 +53,11 @@ abstract class AbstractFlow
         $this->context = $context;
     }
 
+    public function getStates(): array
+    {
+        return $this->states;
+    }
+
     /**
      * @param string|null $state
      * @return string|null $state
@@ -65,24 +71,73 @@ abstract class AbstractFlow
                 'state' => $state
             ]
         );
+        //передано значение state
+        if (!is_null($state)) {
+            $this->$state();
+            return $state;
+        }
         //поиск по контексту
+        $state = $this->findByContext();
 
+        if (!is_null($state)) {
+            $this->$state();
+            return $state;
+        }
 
         //поиск по тригерам
+        $state = $this->findByTrigger();
+
+        if (!is_null($state)) {
+            $this->$state();
+            return $state;
+        }
+
+        return null;
+
+    }
+
+    private function findByContext()
+    {
+        $state = null;
+        if (isset($this->context['flow'])
+            && isset($this->context['state'])
+            && class_exists($this->context['flow'])
+            && method_exists(app($this->context['flow']), $this->context['state'])
+        ) {
+            $flow = app($this->context['flow']);
+            $states = $flow->getStates();
+            $currentState = collect($states)->search($this->context['state']);
+            $currentState = $states[$currentState];
+
+            $nextState = $states[$currentState + 1];
+
+            if (isset($states[$nextState])) {
+                $flow->run($states[$nextState]);
+                return $states[$nextState];
+            }
+        }
+
+        return null;
+    }
+
+    private function findByTrigger()
+    {
+        $state = null;
         foreach ($this->triggers as $trigger) {
             if (hash_equals($trigger, $this->message->text)) {
                 $state = 'first';
             }
         }
+        return $state;
+    }
 
-        if (is_null($state)) {
-            return null;
+    protected function jump($flow, string $state = null)
+    {
+        if (!class_exists($flow)) {
+            Log::error('Flow does not exist');
         }
 
-        $this->$state();
-
-        return $state;
-
+        app($flow)->run($state);
     }
 
     protected abstract function first();

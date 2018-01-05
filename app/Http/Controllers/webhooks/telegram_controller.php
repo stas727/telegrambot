@@ -22,7 +22,7 @@ class telegram_controller extends Controller
 
         Log::debug(
             'Telegram.process', [
-                'update' => $update->update->toArray()
+                'update' => $update
             ]
         );
 
