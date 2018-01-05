@@ -14,7 +14,7 @@ use App\Entities\User;
 
 class Context
 {
-    public function save(User $user, AbstractFlow $flow, string $state)
+    public static function save(User $user, AbstractFlow $flow, string $state)
     {
         \Log::debug('Context.save', [
             'user' => $user->toArray(),
@@ -23,18 +23,18 @@ class Context
         ]);
 
 
-        \Cache::forever($this->key($user), [
+        \Cache::forever(self::key($user), [
             'flow' => get_class($flow),
             'state' => $state
         ]);
     }
 
-    public function get(User $user)
+    public static function get(User $user)
     {
-        return cache($this->key($user), []);
+        return cache(self::key($user), []);
     }
 
-    public function key(User $user)
+    public static function key(User $user)
     {
         return 'context_' . $user->id;
     }

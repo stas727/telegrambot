@@ -28,7 +28,10 @@ class Conversation
                 'message' => $message->toArray()
             ]
         );
-        $context = $this->context->get($user);
+
+
+        $context = Context::get($user);
+
         foreach ($this->flows as $flow) {
             /**
              * @var AbstractFlow $flow
@@ -38,11 +41,8 @@ class Conversation
             $flow->setUser($user);
             $flow->setMessage($message);
             $flow->setContext($context);
-            $state = $flow->run();
-            if (!is_null($state)) {
-                $this->context->save($user, $flow, $state);
-                break;
-            }
+            $flow->run();
+
         }
     }
 }

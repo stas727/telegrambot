@@ -10,7 +10,9 @@ namespace App\Conversation\Flow;
 
 use App\Entities\Message;
 use App\Entities\User;
+use App\Events\FlowRunned;
 use Log;
+use Psr\Log\InvalidArgumentException;
 
 abstract class AbstractFlow
 {
@@ -74,14 +76,16 @@ abstract class AbstractFlow
         //передано значение state
         if (!is_null($state)) {
             $this->$state();
-            return $state;
+            event(new FlowRunned($this->user, $this, $state));
+            return true;
         }
         //поиск по контексту
         $state = $this->findByContext();
 
         if (!is_null($state)) {
             $this->$state();
-            return $state;
+            event(new FlowRunned($this->user, $this, $state));
+            return true;
         }
 
         //поиск по тригерам
@@ -89,10 +93,11 @@ abstract class AbstractFlow
 
         if (!is_null($state)) {
             $this->$state();
-            return $state;
+            event(new FlowRunned($this->user, $this, $state));
+            return true;
         }
 
-        return null;
+        return false;
 
     }
 
@@ -138,6 +143,20 @@ abstract class AbstractFlow
         }
 
         app($flow)->run($state);
+    }
+
+    private function getFlow(string $flow)
+    {
+        if (!class_exists($flow)) {
+            throw new InvalidArgumentException('Flow does not exist');
+        }
+        /**
+         * @var AbstractFlow
+         */
+        $flow = app($flow);
+        $flow->setUser($this->user);
+        $flow->setMessage($this->message);
+        $flow->setContext($this->context);
     }
 
     protected abstract function first();
