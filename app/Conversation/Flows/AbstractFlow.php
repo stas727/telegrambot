@@ -66,13 +66,6 @@ abstract class AbstractFlow
      */
     public function run($state = null)
     {
-        Log::debug(
-            static::class . '.run', [
-                'user' => $this->user->toArray(),
-                'message' => $this->message->toArray(),
-                'state' => $state
-            ]
-        );
         //передано значение state
         if (!is_null($state)) {
             $this->$state();
