@@ -136,7 +136,7 @@ abstract class AbstractFlow
         return $state;
     }
 
-    protected function jump($flow, string $state = null)
+    protected function jump($flow, string $state = 'first')
     {
         $this->getFlow($flow)->run($state);
     }
