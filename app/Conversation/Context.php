@@ -55,6 +55,6 @@ class Context
 
     public static function key(User $user)
     {
-        return 'laravel_cache:context_' . $user->id;
+        return 'context_' . $user->id;
     }
 }

@@ -31,8 +31,9 @@ class Conversation
             ]
         );
 
-
         $context = Context::get($user);
+
+        LOG::debug('SHOW CURRENT CONTEXT', ['context' => $context]);
 
         foreach ($this->flows as $flow) {
             /**
