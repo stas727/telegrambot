@@ -61,10 +61,10 @@ class CategoryFlow extends AbstractFlow
             return;
         }
         $id = $category->offsetGet('id');
-        //$this->options = ['parent_id' => $id];
-        $this->saveOption('parent_id', $id ?? $this->options['parent_id']);
+        $this->options = ['parent_id' => $id];
+        //$this->saveOption('parent_id', $id ?? $this->options['parent_id']);
         //$this->run('first', ['parent_id' => $id]);
-        //$this->first();
+        $this->first();
     }
 
     private function categories()
