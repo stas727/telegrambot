@@ -59,7 +59,8 @@ abstract class AbstractFlow
 
     /**
      * @param string|null $state
-     * @return string|null $state
+     * @param array $options
+     * @return null|string $state
      */
     public function run($state = null, $options = [])
     {
@@ -73,7 +74,7 @@ abstract class AbstractFlow
 
         //в контексте указан другой flow
 
-        if (isset($this->context['flow']) && $this->context['flow'] == get_class($this)) {
+        if (isset($this->context['flow']) && $this->context['flow'] != get_class($this)) {
             return false;
         }
 
