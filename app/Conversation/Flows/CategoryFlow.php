@@ -9,6 +9,7 @@
 namespace App\Conversation\Flow;
 
 use App\Services\CategoryService;
+use Schema\Record;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram;
 use Log;
@@ -51,18 +52,19 @@ class CategoryFlow extends AbstractFlow
 
     public function navigate()
     {
-        $category = collect($this->categories())->first(function ($record) {
+        $category = collect($this->categories())->first(function (Record $record) {
             return hash_equals($record->offsetGet('name'), $this->message->text);
 
         });
+        Log::debug('NAVIGATE' , ['category' => $category]);
         if (is_null($category)) {
             return;
         }
         $id = $category->offsetGet('id');
-        $this->options = ['parent_id' => $id];
-        //$this->saveOption('parent_id', $id ?? $this->options['parent_id']);
+        //$this->options = ['parent_id' => $id];
+        $this->saveOption('parent_id', $id ?? $this->options['parent_id']);
         //$this->run('first', ['parent_id' => $id]);
-        $this->first();
+        //$this->first();
     }
 
     private function categories()
