@@ -41,7 +41,7 @@ class Context
             'user' => $user->toArray(),
             'options' => $options
         ]);
-        \Cache::forever(self::key($user), [
+        Cache::forever(self::key($user), [
             'flow' => $currentContext['flow'],
             'state' => $currentContext['state'],
             'options' => $options

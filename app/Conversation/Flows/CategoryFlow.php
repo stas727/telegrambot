@@ -32,8 +32,8 @@ class CategoryFlow extends AbstractFlow
 
         $buttons = [];
 
-
-        foreach ($this->categories() as $category) {
+        $categories = $this->categories();
+        foreach ($categories as $category) {
             if ($category->offsetGet('parent_id') == $parent_id) {
                 $buttons[] = [$category->offsetGet('name')];
             }
@@ -47,7 +47,6 @@ class CategoryFlow extends AbstractFlow
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true])
         ]);
-        Log::debug('must be send categories');
     }
 
     public function navigate()
