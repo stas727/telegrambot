@@ -59,7 +59,7 @@ class CategoryFlow extends AbstractFlow
         if (is_null($category)) {
             return;
         }
-        $id = $category->getOffset('id');
+        $id = $category->offsetGet('id');
         $this->options = ['parent_id' => $id];
         //$this->saveOption('parent_id', $id ?? $this->options['parent_id']);
         //$this->run('first', ['parent_id' => $id]);

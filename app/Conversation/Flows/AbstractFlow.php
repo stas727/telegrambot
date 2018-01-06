@@ -73,9 +73,9 @@ abstract class AbstractFlow
 
         //в контексте указан другой flow
 
-        /*if (isset($this->context['flow']) && $this->context['flow'] == get_class($this)) {
+        if (isset($this->context['flow']) && $this->context['flow'] == get_class($this)) {
             return false;
-        }*/
+        }
 
         //перезаписываем опции из контекста
         if (count($options) > 0) {
