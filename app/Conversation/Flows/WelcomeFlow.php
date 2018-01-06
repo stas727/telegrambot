@@ -7,6 +7,7 @@
  */
 
 namespace App\Conversation\Flow;
+
 use Telegram;
 
 class WelcomeFlow extends AbstractFlow
@@ -31,4 +32,8 @@ class WelcomeFlow extends AbstractFlow
         $this->jump(CategoryFlow::class);
     }
 
+    public function navigate()
+    {
+
+    }
 }
