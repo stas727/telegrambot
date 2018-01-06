@@ -22,6 +22,7 @@ class telegram_controller extends Controller
 
         Log::debug(
             'Telegram.process', [
+                'desc' => 'Get webhook updates',
                 'update' => $update
             ]
         );
