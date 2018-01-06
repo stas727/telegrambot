@@ -12,7 +12,7 @@ namespace App\Conversation;
 use App\Conversation\Flow\AbstractFlow;
 use App\Entities\User;
 use Log;
-
+use Cache;
 class Context
 {
     public static function save(User $user, AbstractFlow $flow, string $state, array $options = [])
@@ -50,7 +50,7 @@ class Context
 
     public static function get(User $user)
     {
-        return cache(self::key($user), []);
+        return Cache::get(self::key($user), []);
     }
 
     public static function key(User $user)
