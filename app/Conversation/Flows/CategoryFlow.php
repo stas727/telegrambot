@@ -10,13 +10,14 @@ namespace App\Conversation\Flow;
 
 use App\Conversation\Traits\HasOptions;
 use App\Conversation\Traits\HasStates;
+use App\Conversation\Traits\HasTriggers;
 use App\Conversation\Traits\SendMessages;
 use App\Services\CategoryService;
 use Schema\Record;
 
 class CategoryFlow extends AbstractFlow
 {
-    use SendMessages, HasStates, HasOptions;
+    use SendMessages, HasStates, HasOptions , HasTriggers;
 
     function __construct()
     {
@@ -50,9 +51,11 @@ class CategoryFlow extends AbstractFlow
 
         });
         $this->log('showChildren', ['category' => $category]);
+
         if (is_null($category)) {
             return;
         }
+
         $this->remember('parent_id', $category->offsetGet('id'));
 
         $this->runState('showParent');

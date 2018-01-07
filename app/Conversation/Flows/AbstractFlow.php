@@ -69,28 +69,12 @@ abstract class AbstractFlow
             return true;
         }
         //Search in triggers
-        if ($this->usesTriggers() && $this->hasTriggers($this->message->text)) {
+        if ($this->usesTriggers() && $this->hasTrigger($this->message->text)) {
             $state = $this->getNextState();
             $this->runState($state);
             return true;
         }
         return false;
-    }
-
-    /**
-     * Run State
-     * @param string $state
-     *
-     */
-    public function runState($state)
-    {
-        $this->log('run', ['user' => $this->user->id, 'message' => $this->message->text, 'state' => $state]);
-
-        //Run provided state
-        $this->setContext($this, $state, $this->context()->getOptions());
-        $this->$state();
-
-
     }
 
     public function runFlow($flow, string $state = null)
@@ -102,11 +86,25 @@ abstract class AbstractFlow
         $state = $state ?? $flow->getNextState();
         $flow->runState($state);
     }
+    /**
+     * Run State
+     * @param string $state
+     *
+     */
+    public function runState($state)
+    {
+        $this->log('runState', ['user' => $this->user->id, 'message' => $this->message->text, 'state' => $state]);
+
+        //Run provided state
+        $this->setContext($this, $state, $this->context()->getOptions());
+        $this->$state();
+    }
 
     public function validate()
     {
         if (
-            $this->context()->hasFlow() && get_class($this->context()->getFlow()) != get_class($this)
+            $this->context()->hasFlow() &&
+            get_class($this->context()->getFlow()) != get_class($this)
         ) {
             throw new ConversationException('Context has another flow');
         }

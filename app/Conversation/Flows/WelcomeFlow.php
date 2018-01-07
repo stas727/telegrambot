@@ -37,9 +37,4 @@ class WelcomeFlow extends AbstractFlow
 
         $this->runFlow(CategoryFlow::class);
     }
-
-    public function navigate()
-    {
-
-    }
 }

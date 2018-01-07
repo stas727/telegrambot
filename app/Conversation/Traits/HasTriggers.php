@@ -28,7 +28,7 @@ trait HasTriggers
         return $this->triggers;
     }
 
-    public function hasTriggers($value): bool
+    public function hasTrigger($value): bool
     {
         return in_array($value, $this->triggers);
     }
