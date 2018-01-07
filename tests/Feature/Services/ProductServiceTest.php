@@ -28,7 +28,8 @@ class ProductServiceTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
-   /* public function test_getProductByCategoryId(){
-        $result = $this->service->getProductByCategoryId();
-    }*/
+    public function test_getProductByCategoryId(){
+        $result = $this->service->getProductByCategoryId('5a28f9d0181f8d591b64f4ee');
+        dd($result);
+    }
 }
