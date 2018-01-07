@@ -8,28 +8,34 @@
 
 namespace App\Conversation\Flow;
 
-use Telegram;
+use App\Conversation\Traits\HasStates;
+use App\Conversation\Traits\HasTriggers;
+use App\Conversation\Traits\SendMessages;
+
 
 class WelcomeFlow extends AbstractFlow
 {
+    use HasTriggers, HasStates, SendMessages;
 
-    protected $triggers = [
-        '/start',
-        '/привет'
-    ];
-
-    protected $states = [
-        'first'
-    ];
-
-    protected function first()
+    public function __construct()
     {
-        $this->telegram()->sendMessage([
-            'chat_id' => $this->user->chat_id,
-            'text' => 'Привет от Крокус Студио :)'
-        ]);
+        //Triggers
+        $this
+            ->addTrigger('/start')
+            ->addTrigger('привет');
+        //States
+        $this
+            ->addStates('sayHello');
 
-        $this->jump(CategoryFlow::class);
+    }
+
+    protected function sayHello()
+    {
+        $this->log('sayHello',  []);
+
+        $this->reply('Привет в Крокус Студио :)');
+
+        $this->runFlow(CategoryFlow::class);
     }
 
     public function navigate()

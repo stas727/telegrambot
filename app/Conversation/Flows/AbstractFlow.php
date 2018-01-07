@@ -8,28 +8,30 @@
 
 namespace App\Conversation\Flow;
 
+use App\Conversation\Traits\HasStates;
+use App\Conversation\Traits\HasTriggers;
+use App\Conversation\Traits\InteractsWithContext;
 use App\Entities\Message;
 use App\Entities\User;
-use App\Events\FlowRunned;
-use App\Events\OptionChanged;
-use Log;
-use Psr\Log\InvalidArgumentException;
-use Telegram;
+use App\Exceptions\ConversationException;
+use App\Traits\Loggable;
 
+/**
+ * Class AbstractFlow
+ *
+ * @method getNextState(string $current = null)
+ * @method hasTrigger(string $value)
+ * @package App\Conversation\Flow
+ *
+ *
+ */
 abstract class AbstractFlow
 {
+    use Loggable, InteractsWithContext;
 
     protected $user;
 
     protected $message;
-
-    protected $triggers = [];
-
-    protected $states = ['first'];
-
-    protected $options = [];
-
-    protected $context = [];
 
     /**
      * @param User $user
@@ -47,137 +49,76 @@ abstract class AbstractFlow
         $this->message = $message;
     }
 
-    public function setContext($context)
+    public function handle()
     {
-        $this->context = $context;
-    }
+        $this->log('handle', [
+            'user' => $this->user->id,
+            'message' => $this->message->text
+        ]);
+        $this->validate();
+        //Search in states
+        $this->log('isFlowInContext', [$this->isFlowInContext($this)]);
+        if ($this->usesStates() && $this->isFlowInContext($this)) {
+            $state = $this->getNextState($this->context()->getState());
 
-    public function getStates(): array
-    {
-        return $this->states;
+            if (is_null($state)) {
+                $this->clearContext();
+                throw new ConversationException('Next state is not defined');
+            }
+            $this->runState($state);
+            return true;
+        }
+        //Search in triggers
+        if ($this->usesTriggers() && $this->hasTrigger($this->message->text)) {
+            $state = $this->getNextState();
+            $this->runState($state);
+            return true;
+        }
+        return false;
     }
 
     /**
-     * @param string|null $state
-     * @param array $options
-     * @return null|string $state
+     * Run State
+     * @param string $state
+     *
      */
-    public function run($state = null, $options = [])
+    public function runState($state)
     {
-        Log::debug(
-            static::class . '.run', [
-                'user' => $this->user->toArray(),
-                'message' => $this->message->toArray(),
-                'state' => $state
-            ]
-        );
+        $this->log('run', ['user' => $this->user->id, 'message' => $this->message->text, 'state' => $state]);
 
-        //в контексте указан другой flow
+        //Run provided state
+        $this->setContext($this, $state, $this->context()->getOptions());
+        $this->$state();
 
-        if (isset($this->context['flow']) && $this->context['flow'] != get_class($this)) {
-            return false;
-        }
-
-        //перезаписываем опции из контекста
-        if (count($options) > 0) {
-            $this->options = array_merge($options, $this->options);
-        } else {
-            $this->options = array_merge($this->context['options'] ?? $this->options, $this->options);
-        }
-        //передано значение state
-        if (!is_null($state)) {
-            event(new FlowRunned($this->user, $this, $state, $this->options));
-            $this->$state();
-            return true;
-        }
-        //поиск по контексту
-        $state = $this->findByContext();
-
-        if (!is_null($state)) {
-            event(new FlowRunned($this->user, $this, $state, $this->options));
-            $this->$state();
-            return true;
-        }
-
-        //поиск по тригерам
-        $state = $this->findByTrigger();
-
-        if (!is_null($state)) {
-            event(new FlowRunned($this->user, $this, $state, $this->options));
-            $this->$state();
-            return true;
-        }
-
-        return false;
 
     }
 
-    private function findByContext()
+    public function runFlow($flow, string $state = null)
     {
-        $state = null;
-        if (isset($this->context['flow'])
-            && isset($this->context['state'])
-            && class_exists($this->context['flow'])
-            && method_exists(app($this->context['flow']), $this->context['state'])
-        ) {
-            $flow = $this->getFlow($this->context['flow']);
-            $states = $flow->getStates();
-            $currentState = collect($states)->search($this->context['state']);
-            $currentState = $states[$currentState];
-
-            $nextState = $currentState + 1;
-
-            if (isset($states[$nextState])) {
-                $flow->run($states[$nextState]);
-                return $states[$nextState];
-            }
-        }
-
-        return null;
-    }
-
-    private function findByTrigger()
-    {
-        $state = null;
-        foreach ($this->triggers as $trigger) {
-            if (hash_equals($trigger, $this->message->text)) {
-                $state = 'first';
-            }
-        }
-        return $state;
-    }
-
-    protected function jump($flow, string $state = 'first')
-    {
-        $this->getFlow($flow)->run($state);
-    }
-
-    public function saveOption(string $key, $value)
-    {
-        event(new OptionChanged($this->user, $key, $value));
-    }
-
-    private function getFlow(string $flow)
-    {
-        if (!class_exists($flow)) {
-            throw new InvalidArgumentException('Flow does not exist');
-        }
-        /**
-         * @var AbstractFlow
-         */
+        $this->clearContext();
         $flow = app($flow);
         $flow->setUser($this->user);
         $flow->setMessage($this->message);
-        $flow->setContext($this->context);
-
-        return $flow;
+        $state = $state ?? $flow->getNextState();
+        $flow->runState($state);
     }
 
-    protected abstract function first();
-
-    public function telegram()
+    public function validate()
     {
-        return Telegram::bot();
+        if (
+            $this->context()->hasFlow() && get_class($this->context()->getFlow()) != get_class($this)
+        ) {
+            throw new ConversationException('Context has another flow');
+        }
     }
 
+    private function usesStates(): bool
+    {
+        return in_array(HasStates::class, class_uses($this));
+    }
+
+    private function usesTriggers(): bool
+    {
+        return in_array(HasTriggers::class, class_uses($this));
+    }
 }

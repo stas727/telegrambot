@@ -11,27 +11,38 @@ namespace App\Conversation;
 use App\Conversation\Flow\AbstractFlow;
 use App\Conversation\Flow\CategoryFlow;
 use App\Conversation\Flow\WelcomeFlow;
+use App\Conversation\Traits\InteractsWithContext;
+use App\Traits\Loggable;
 use Log;
 
 class Conversation
 {
+    use Loggable, InteractsWithContext;
+    protected $flows;
 
-    protected $flows = [
-        WelcomeFlow::class,
-        CategoryFlow::class
-    ];
+    function __construct(array $flows = [])
+    {
+        $this->flows = $flows;
+    }
 
     public function start($user, $message)
     {
-
-        Log::debug(
-            'Conversation.start', [
+        $this->log('start', [
                 'user' => $user->toArray(),
                 'message' => $message->toArray()
             ]
         );
+        $this->user = $user;
 
-        $context = Context::get($user);
+        $context = $this->context();
+
+        if($context->hasFlow()){
+            $flow = $context->getFlow();
+            $flow->setUser($this->user);
+            $flow->setMessage($message);
+            $flow->handle();
+            return;
+        }
 
         LOG::debug('SHOW CURRENT CONTEXT', ['context' => $context]);
 
@@ -43,9 +54,10 @@ class Conversation
 
             $flow->setUser($user);
             $flow->setMessage($message);
-            $flow->setContext($context);
-            $flow->run();
 
+            if($flow->handle()){
+                break;
+            };
         }
     }
 }
