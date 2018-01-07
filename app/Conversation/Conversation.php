@@ -44,12 +44,13 @@ class Conversation
             return;
         }
 
-        LOG::debug('SHOW CURRENT CONTEXT', ['context' => $context]);
+
 
         foreach ($this->flows as $flow) {
             /**
              * @var AbstractFlow $flow
              */
+            LOG::debug('SHOW CURRENT CONTEXT', ['context' => $context]);
             $flow = app($flow);
 
             $flow->setUser($user);
