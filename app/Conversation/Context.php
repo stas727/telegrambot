@@ -83,7 +83,7 @@ class Context
      */
     public function getFlow()
     {
-        return $this->flow;
+        return $this->hasFlow() ? app($this->flow) : null;
     }
 
     public function setFlow(AbstractFlow $flow)
