@@ -33,8 +33,8 @@ trait SendMessages
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true
             ]);
-            Telegram::sendMessage($params);
         }
+        Telegram::sendMessage($params);
     }
 
 }
