@@ -27,7 +27,6 @@ class CategoryFlow extends AbstractFlow
             ->addStates('showParent')
             ->addStates('showChildren');
 
-
         //Options
         $this->
         addOption('parent_id');
@@ -44,10 +43,11 @@ class CategoryFlow extends AbstractFlow
             }
         }
         if(count($buttons) == 0){
-            $this->sendPhoto('no product');
+
+            $this->sendPhoto($this->message);
             return;
         }
-        $this->reply('Список категорий ', $buttons);
+        $this->reply('Выберете категорию ', $buttons);
     }
 
     public function showChildren()

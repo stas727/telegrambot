@@ -32,6 +32,11 @@ class CategoryService
 
     public function categoryWithProducts($category)
     {
-        return $this->api->get('/categories/' . $category , array('expand' => 'products'));
+        return $this->api->get('/products', [
+            'where' => [
+                'category' => $category
+            ]
+        ]);
+        return $this->api->get('/categories/' . $category, array('expand' => 'products'));
     }
 }
