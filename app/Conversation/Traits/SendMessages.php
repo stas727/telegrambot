@@ -36,5 +36,12 @@ trait SendMessages
         }
         Telegram::sendMessage($params);
     }
+    public function sendPhoto(){
+         Telegram::sendPhoto([
+            'chat_id' => $this->user->chat_id,
+            'photo' => 'http://www.lg.com/us/images/cell-phones/MD05810711/md05803029-350x350.jpg',
+            'caption' => 'Some caption'
+        ]);
+    }
 
 }

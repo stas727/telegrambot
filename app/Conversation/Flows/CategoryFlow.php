@@ -69,7 +69,7 @@ class CategoryFlow extends AbstractFlow
             }
             $this->reply($str);
         }
-        $this->reply('no product');
+        $this->sendPhoto('no product');
 
         $this->remember('parent_id', $category->offsetGet('id'));
 

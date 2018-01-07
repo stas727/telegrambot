@@ -4,6 +4,7 @@ namespace App\Http\Controllers\webhooks;
 
 use App\Conversation\Conversation;
 use App\Repositories\MessageRepository;
+use App\Services\CategoryService;
 use Log;
 use Telegram;
 use App\Http\Controllers\Controller;
@@ -13,6 +14,9 @@ class telegram_controller extends Controller
 {
     public function index()
     {
+        $app = app(CategoryService::class);
+        $app->categoryWithProducts('apple');
+
         return view('welcome');
     }
 
