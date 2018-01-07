@@ -69,7 +69,7 @@ abstract class AbstractFlow
             return true;
         }
         //Search in triggers
-        if ($this->usesTriggers() && $this->hasTrigger($this->message->text)) {
+        if ($this->usesTriggers() && $this->hasTriggers($this->message->text)) {
             $state = $this->getNextState();
             $this->runState($state);
             return true;
