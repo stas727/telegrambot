@@ -18,12 +18,6 @@ class CategoryFlow extends AbstractFlow
 {
     use SendMessages, HasStates, HasOptions;
 
-    protected $triggers = [];
-    protected $states = ['showParent', 'showChildren'];
-    protected $options = [
-        'parent_id' => null
-    ];
-
     function __construct()
     {
         //States
