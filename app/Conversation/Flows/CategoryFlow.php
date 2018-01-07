@@ -13,11 +13,12 @@ use App\Conversation\Traits\HasStates;
 use App\Conversation\Traits\HasTriggers;
 use App\Conversation\Traits\SendMessages;
 use App\Services\CategoryService;
+use App\Services\ProductService;
 use Schema\Record;
 
 class CategoryFlow extends AbstractFlow
 {
-    use SendMessages, HasStates, HasOptions , HasTriggers;
+    use SendMessages, HasStates, HasOptions, HasTriggers;
 
     function __construct()
     {
@@ -56,7 +57,20 @@ class CategoryFlow extends AbstractFlow
         if (is_null($category)) {
             return;
         }
-        $this->reply('show product');
+        /**
+         * @var ProductService $product
+         */
+        $product = app(ProductService::class);
+        $products = $product->getProductByCategoryId($category->offsetGet('id'));
+        if (!is_null($products)) {
+            $str = '';
+            foreach ($products as $product) {
+                $str .= $product->offsetGet('name');
+            }
+            $this->reply($str);
+        }
+        $this->reply('no product');
+
         $this->remember('parent_id', $category->offsetGet('id'));
 
         $this->runState('showParent');

@@ -14,6 +14,8 @@ class ProductServiceTest extends TestCase
      *
      * @return void
      */
+
+
     public function setUp()
     {
         parent::setUp();
@@ -25,4 +27,8 @@ class ProductServiceTest extends TestCase
         $result = $this->service->all();
         $this->assertInstanceOf(Collection::class, $result);
     }
+
+   /* public function test_getProductByCategoryId(){
+        $result = $this->service->getProductByCategoryId();
+    }*/
 }
