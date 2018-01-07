@@ -26,6 +26,7 @@ class CategoryFlow extends AbstractFlow
             ->addStates('showParent')
             ->addStates('showChildren');
 
+
         //Options
         $this->
         addOption('parent_id');
@@ -55,7 +56,7 @@ class CategoryFlow extends AbstractFlow
         if (is_null($category)) {
             return;
         }
-
+        $this->reply('show product');
         $this->remember('parent_id', $category->offsetGet('id'));
 
         $this->runState('showParent');

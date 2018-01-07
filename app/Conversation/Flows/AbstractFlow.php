@@ -86,11 +86,7 @@ abstract class AbstractFlow
         $state = $state ?? $flow->getNextState();
         $flow->runState($state);
     }
-    /**
-     * Run State
-     * @param string $state
-     *
-     */
+
     public function runState($state)
     {
         $this->log('runState', ['user' => $this->user->id, 'message' => $this->message->text, 'state' => $state]);

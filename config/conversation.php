@@ -9,5 +9,6 @@ return [
   'flows' => [
       \App\Conversation\Flow\WelcomeFlow::class,
       \App\Conversation\Flow\CategoryFlow::class,
+      \App\Conversation\Flow\ProductFlow::class
   ],
 ];
