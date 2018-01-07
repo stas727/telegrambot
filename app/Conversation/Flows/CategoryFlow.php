@@ -60,7 +60,7 @@ class CategoryFlow extends AbstractFlow
         /**
          * @var ProductService $product
          */
-        $products = $product->productsByCategory($category->offsetGet('name'));
+        $products = $this->productsByCategory($category->offsetGet('name'));
 
         if (!is_null($products)) {
             $str = '';
