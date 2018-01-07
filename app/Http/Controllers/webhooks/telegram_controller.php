@@ -15,7 +15,9 @@ class telegram_controller extends Controller
     public function index()
     {
         $app = app(CategoryService::class);
-        $app->categoryWithProducts('apple');
+        $products = $app->categoryWithProducts('apple');
+        dd($products->offsetGet('products'));
+
 
         return view('welcome');
     }

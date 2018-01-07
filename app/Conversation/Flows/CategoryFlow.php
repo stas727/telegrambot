@@ -43,6 +43,10 @@ class CategoryFlow extends AbstractFlow
                 $buttons[] = $category->offsetGet('name');
             }
         }
+        if(is_null($buttons)){
+            $this->sendPhoto('no product');
+            return;
+        }
         $this->reply('Список категорий ', $buttons);
     }
 
@@ -60,16 +64,16 @@ class CategoryFlow extends AbstractFlow
         /**
          * @var ProductService $product
          */
-        $products = $this->productsByCategory($category->offsetGet('name'));
+       /* $products = $this->productsByCategory($category->offsetGet('name'));
 
         if (!is_null($products)) {
             $str = '';
             foreach ($products as $product) {
-                $str .= $product->offsetGet('name');
+                $str .= $product->offsetGet('products');
             }
             $this->reply($str);
         }
-        $this->sendPhoto('no product');
+        */
 
         $this->remember('parent_id', $category->offsetGet('id'));
 
