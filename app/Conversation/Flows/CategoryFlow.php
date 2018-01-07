@@ -43,7 +43,7 @@ class CategoryFlow extends AbstractFlow
                 $buttons[] = $category->offsetGet('name');
             }
         }
-        if(is_null($buttons)){
+        if(count($buttons) == 0){
             $this->sendPhoto('no product');
             return;
         }
