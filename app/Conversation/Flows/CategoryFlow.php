@@ -41,8 +41,6 @@ class CategoryFlow extends AbstractFlow
             }
         }
         $this->reply('Список категорий ', $buttons);
-
-        $this->runState('showParent');
     }
 
     public function showChildren()
@@ -57,6 +55,7 @@ class CategoryFlow extends AbstractFlow
         }
         $this->remember('parent_id', $category->offsetGet('id'));
 
+        $this->runState('showParent');
         //$this->first();
     }
 
