@@ -27,11 +27,4 @@ class ProductService
             'limit' => 1000
         ]);
     }
-
-    public function getProductByCategoryId($categoryId)
-    {
-        return $this->api->get('/products', [
-            'category_id' => $categoryId
-        ]);
-    }
 }

@@ -60,8 +60,8 @@ class CategoryFlow extends AbstractFlow
         /**
          * @var ProductService $product
          */
-        $product = app(ProductService::class);
-        $products = $product->getProductByCategoryId($category->offsetGet('id'));
+        $products = $product->productsByCategory($category->offsetGet('name'));
+
         if (!is_null($products)) {
             $str = '';
             foreach ($products as $product) {
@@ -81,5 +81,9 @@ class CategoryFlow extends AbstractFlow
     {
         $services = app(CategoryService::class);
         return $services->all()->records();
+    }
+    public function productsByCategory($category_name){
+        $services = app(CategoryService::class);
+        return $services->categoryWithProducts($category_name);
     }
 }

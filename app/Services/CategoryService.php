@@ -29,4 +29,9 @@ class CategoryService
             'limit' => 1000
         ]);
     }
+
+    public function categoryWithProducts($category)
+    {
+        return $this->api->get('/categories/' . $category , array('expand' => 'products'));
+    }
 }
